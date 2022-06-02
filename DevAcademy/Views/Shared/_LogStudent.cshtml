@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="icon" href="~/images/458910.png" type="image/icon type">
+    <link rel="stylesheet" href="~/fontawesome-free-6.1.1-web/css/all.css">
+</head>
+<body>
+    <div class="site">
+        @RenderBody()
+    </div>
+    <footer class="site-footer down">
+        <div class="wrapper">
+            <div class="upper-div">
+                <div class="left">
+                    <p class="caption">Ready to start out courses?</p>
+                    <p class="caption">Our mission is to provide a free, <br /> world-class education to anyone, anywhere.</p>
+                    <p class="caption">Dev Academy is a 501(c)(3) nonprofit organization. <br /> <a href="">Donate</a> or <a href="https://github.com/georgianastasov">Volunteer</a> today!</p>
+                </div>
+                <div class="right">
+                    <p>Links</p>
+                    <ul>
+                        <li><a href="/Student/Courses">Courses</a></li>
+                        <li><a href="/Student/About">About us</a></li>
+                        <li><a href="/Student/Contacts">Contacts</a></li>
+                        <li><a href="/Student/Contacts">Help</a></li>
+                        <li><a href="/Home/Index">Log Out</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="lowwer-div">
+                <p>© 2022 Dev Academy</p>
+                <a href="">Terms of use</a>
+                <a href="">Privacy policy</a>
+                <a href="">Cookie Notice</a>
+            </div>
+        </div>
+    </footer>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

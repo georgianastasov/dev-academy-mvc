@@ -1,0 +1,112 @@
+﻿@model Student
+@{
+    ViewData["Title"] = "Dev Academy Sections";
+    Layout = "_LogStudent";
+}
+@{
+    IEnumerable<Category> categories = ViewData["Categories"] as IEnumerable<Category>;
+    IEnumerable<Course> courses = ViewData["Courses"] as IEnumerable<Course>;
+    IEnumerable<Section> sections = ViewData["Sections"] as IEnumerable<Section>;
+}
+<input type="checkbox" name="main-nav-toggle" id="main-nav-toggle" checked />
+<header class="site-header">
+    <div class="wrapper">
+        <nav class="site-nav left">
+            <ul>
+                <li>
+                    <a href="/Student/Courses">Courses</a>
+                    <ul id="courses-header">
+                        <li><a href="/Student/Categories">Categories</a></li>
+                        <li><a href="/Student/Courses">Courses</a></li>
+                        <li><a href="/Student/Sections">Sections</a></li>
+                    </ul>
+                </li>
+                <li><a href="/Student/About">About us</a></li>
+            </ul>
+        </nav>
+        <div class="site-logo">
+            <img src="~/images/458910.png" alt="">
+            <a class="caption" href="/Student/Dashboard">Academy</a>
+        </div>
+        <label for="main-nav-toggle" id="toggle"><i class="fab fa-xing"></i>Menu</label>
+        <nav class="site-nav right">
+            <ul>
+                <li><a href="/Student/Contacts">Contacts</a></li>
+                <li>
+                    <a href="/Student/Dashboard">@Model.Username</a>
+                    <ul id="username-header">
+                        <li><a href="/Student/Dashboard">Account</a></li>
+                        <li><a href="/Student/Settings">Settings</a></li>
+                        <li><a asp-controller="Student" asp-action="Logout">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>
+<div class="intro-sections">
+    <div class="wrapper">
+        <p class="cap">Sections</p>
+    </div>
+</div>
+<div class="info-sections">
+    <div class="wrapper">
+        @foreach (var sectionn in sections)
+        {
+            <div class="box">
+                <div class="left">
+                    @foreach (var category in categories)
+                    {
+                        var course = courses.Where(x => x.Id == sectionn.CourseID).FirstOrDefault();
+
+                        @if (category.Id == course.CategoryID)
+                        {
+                            @if (category.Title == "Math")
+                            {
+                                <a asp-controller="Student" asp-action="Course" asp-route-id="@course.Id"><img src="~/images/mathicon.jpg"></a>
+                            }
+                            else if (category.Title == "Science")
+                            {
+                                <a asp-controller="Student" asp-action="Course" asp-route-id="@course.Id"><img src="~/images/scienceicon.jpg"></a>
+                            }
+                            else if (category.Title == "Art")
+                            {
+                                <a asp-controller="Student" asp-action="Course" asp-route-id="@course.Id"><img src="~/images/articon.jpg"></a>
+                            }
+                            else if (category.Title == "Informatics")
+                            {
+                                <a asp-controller="Student" asp-action="Course" asp-route-id="@course.Id"><img src="~/images/informaticsicon.png"></a>
+                            }
+                            else if (category.Title == "Physics")
+                            {
+                                <a asp-controller="Student" asp-action="Course" asp-route-id="@course.Id"><img src="~/images/physicsicon.jpg"></a>
+                            }
+                            break;
+                        }
+                    }
+                </div>
+                <div class="right">
+                    @foreach (var category in categories)
+                    {
+                        var course = courses.Where(x => x.Id == sectionn.CourseID).FirstOrDefault();
+
+                        @if (category.Id == course.CategoryID)
+                        {
+                            <p class="caption">@category.Title > @course.Title</p>
+                            break;
+                        }
+                    }
+                    @foreach (var course in courses)
+                    {
+                        @if (course.Id == sectionn.CourseID)
+                        {
+                            <p class="title"><a asp-controller="Student" asp-action="Course" asp-route-id="@course.Id">@sectionn.Title</a></p>
+                            break;
+                        }
+                    }
+                    <p class="description">@sectionn.Description</p>
+                </div>
+            </div>
+        }
+    </div>
+</div>

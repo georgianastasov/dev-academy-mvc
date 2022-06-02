@@ -1,0 +1,115 @@
+﻿@using DevAcademy.Cryptography
+@model Admin
+@{
+    ViewData["Title"] = "Delete Admin";
+    Layout = "_LogAdmin";
+}
+@{
+    Admin admin = ViewData["Admin"] as Admin;
+    IEnumerable<Category> categories = ViewData["Categories"] as IEnumerable<Category>;
+    string categoryText = null;
+    foreach (var category in categories)
+    {
+        if (category.AdminID == @Model.Id)
+        {
+            categoryText += "Id:" + @category.Id.ToString() + " " + "Title:" + @category.Title.ToString() + "\n";
+        }
+    }
+    IEnumerable<Course> courses = ViewData["Courses"] as IEnumerable<Course>;
+    string courseText = null;
+    foreach (var course in courses)
+    {
+        if (course.AdminID == @Model.Id)
+        {
+            courseText += "Id:" + @course.Id.ToString() + " " + "Title:" + @course.Title.ToString() + "\n";
+        }
+    }
+    IEnumerable<Section> sections = ViewData["Sections"] as IEnumerable<Section>;
+    string sectionText = null;
+    foreach (var section in sections)
+    {
+        if (section.AdminID == @Model.Id)
+        {
+            sectionText += "Id:" + @section.Id.ToString() + " " + "Title:" + @section.Title.ToString() + "\n";
+        }
+    }
+}
+<div class="site-dashboard">
+    <div class="site-left">
+        <p class="site-title">Admin Dashboard</p>
+        <nav class="navigation-account">
+            <ul>
+                <li>Admin</li>
+                <li>
+                    <a href="">@admin.Username</a>
+                </li>
+            </ul>
+        </nav>
+        <nav class="navigation-admin">
+            <ul>
+                <li><a href="/Admin/Dashboard">Back</a></li>
+            </ul>
+        </nav>
+    </div>
+    <div class="site-right">
+        <form method="post" asp-action="DeleteAdminPost">
+            <input asp-for="Id" hidden />
+            <div class="site-top">
+                <p class="caption">Delete Admin</p>
+            </div>
+            <div class="box-form">
+                <div asp-validation-summary="ModelOnly"></div>
+                <div class="form-group">
+                    <div class="box">
+                        <label asp-for="FirstName"></label>
+                        <input asp-for="FirstName" disabled />
+                    </div>
+                    <div class="box">
+                        <label asp-for="LastName"></label>
+                        <input asp-for="LastName" disabled />
+                    </div>
+                    <div class="box">
+                        <label asp-for="Username"></label>
+                        <input asp-for="Username" disabled />
+                    </div>
+                    <div class="box">
+                        <label asp-for="Email"></label>
+                        <input asp-for="Email" disabled />
+                    </div>
+                    <div class="box">
+                        <label asp-for="AccountType"></label>
+                        <input asp-for="AccountType" disabled />
+                    </div>
+                    <div class="box">
+                        <label asp-for="Password"></label>
+                        <input asp-for="Password" value="@Crypting.DeCrypt(@Model.Password)" disabled />
+                    </div>
+                    <div class="box">
+                        <label asp-for="ConfirmPassword"></label>
+                        <input asp-for="ConfirmPassword" value="@Crypting.DeCrypt(@Model.ConfirmPassword)" disabled />
+                    </div>
+                    <div class="box">
+                        <label asp-for="CreatedDate"></label>
+                        <input asp-for="CreatedDate" disabled />
+                    </div>
+                    <div class="box">
+                        <label asp-for="Categories"></label>
+                        <textarea rows="10" cols="45" disabled>@categoryText</textarea>
+                    </div>
+                    <div class="box">
+                        <label asp-for="Courses"></label>
+                        <textarea rows="10" cols="45" disabled>@courseText</textarea>
+                    </div>
+                    <div class="box">
+                        <label asp-for="Sections"></label>
+                        <textarea rows="10" cols="45" disabled>@sectionText</textarea>
+                    </div>
+                    <div class="box-buttons">
+                        <input type="submit" class="delete" value="Delete" />
+                        <a class="" href="/Admin/Dashboard">Back</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

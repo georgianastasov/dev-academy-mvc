@@ -1,0 +1,44 @@
+﻿@model User
+@{
+    ViewData["Title"] = "Login Dev Academy";
+    Layout = "_Site";
+}
+<div class="site-login">
+    <div class="container" id="container1">
+        <div class="form-container sign-in-container">
+    <form id="account" method="post">
+        <h2>Log in</h2>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <input asp-for="@Model.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="Email"/>
+            @*<label asp-for="Input.Email" class="form-label"></label>*@
+            <span asp-validation-for="@Model.Email" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input type="password" asp-for="@Model.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Password"/>
+            @*<label asp-for="Input.Password" class="form-label"></label>*@
+            <span asp-validation-for="@Model.Password" class="text-danger"></span>
+        </div>
+        @*<div class="form-group">
+            <div class="box">
+                <label class="control control--checkbox" asp-for="Input.RememberMe">@Html.DisplayNameFor(m => m.Input.RememberMe)
+                    <input type="checkbox" class="form-check-input" asp-for="Input.RememberMe" />
+                    <div class="control__indicator"></div>
+                </label>
+            </div>
+        </div>*@
+        <div class="form-group">
+            <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
+        </div>
+    </form>
+</div>
+<div class="overlay-panel overlay-right">
+    <h1>Hello, Friend!</h1>
+    <p>Enter your personal details and start journey with us</p>
+    <a class="ghost" href="/Home/Register">Sign Up</a>
+</div>
+    </div>
+</div>
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+}

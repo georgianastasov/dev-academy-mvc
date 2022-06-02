@@ -1,0 +1,352 @@
+﻿@using DevAcademy.Cryptography
+@model Student
+@{
+    ViewData["Title"] = "Dev Academy";
+    Layout = "_LogStudent";
+}
+@{
+    Student student = ViewData["Student"] as Student;
+    IEnumerable<Category> categories = ViewData["Categories"] as IEnumerable<Category>;
+    IEnumerable<Course> courses = ViewData["Courses"] as IEnumerable<Course>;
+    IEnumerable<Section> sections = ViewData["Sections"] as IEnumerable<Section>;
+
+    List<string> array = new List<string>();
+    if (Model.CoursesIDs != null)
+    {
+        var array2 = @Model.CoursesIDs.Split(',', StringSplitOptions.RemoveEmptyEntries).ToArray();
+        array = array2.ToList();
+    }
+    int counter = 0;
+
+    List<string> dates = new List<string>();
+    for (var i = 0; i < array.Count; i++)
+    {
+        var arr = array[i].Split('=', StringSplitOptions.RemoveEmptyEntries);
+        if (arr[1].ToString() == "0")
+        {
+            dates.Add(arr[2]);
+        }
+        else
+        {
+            dates.Add(arr[2]);
+            dates.Add(arr[3]);
+        }
+    }
+
+    List<DateTime> datesParsed = new List<DateTime>();
+    for (var i = 0; i < dates.Count; i++)
+    {
+        datesParsed.Add(DateTime.Parse(dates[i]));
+    }
+    datesParsed.Sort();
+}
+<div id="box-form-box" class="top-box">
+    <form method="post" asp-action="AddBio">
+        <div asp-validation-summary="ModelOnly"></div>
+        <div class="form-group">
+            <div class="box">
+                <label asp-for="Bio">Add your bio here..</label>
+                <textarea asp-for="Bio" rows="8" cols="35"></textarea>
+                <span asp-validation-for="Bio"></span>
+            </div>
+            <div class="box-buttons">
+                <input type="submit" class="add" value="Add" />
+                <a class="back" onclick="HideBio()">Back</a>
+            </div>
+        </div>
+    </form>
+</div>
+<div id="box-profile-box" class="top-box">
+    <form method="post" asp-action="UpdateProfile">
+        <input asp-for="Id" hidden />
+        <div class="box-form">
+            <div asp-validation-summary="ModelOnly"></div>
+            <div class="form-group">
+                <div class="box">
+                    <label asp-for="FirstName"></label>
+                    <input asp-for="FirstName" />
+                    <span asp-validation-for="FirstName"></span>
+                </div>
+                <div class="box">
+                    <label asp-for="LastName"></label>
+                    <input asp-for="LastName" />
+                    <span asp-validation-for="LastName"></span>
+                </div>
+                <div class="box">
+                    <label asp-for="Username"></label>
+                    <input asp-for="Username" />
+                    <span asp-validation-for="Username"></span>
+                </div>
+                <div class="box">
+                    <label asp-for="Bio"></label>
+                    <textarea asp-for="Bio" rows="8" cols="35"></textarea>
+                    <span asp-validation-for="Bio"></span>
+                </div>
+                <div class="box-buttons">
+                    <input type="submit" class="update" value="Update" />
+                    <a class="back" onclick="HideEdit()">Back</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<input type="checkbox" name="main-nav-toggle" id="main-nav-toggle" checked />
+<header id="header-down" class="site-header">
+    <div class="wrapper">
+        <nav class="site-nav left">
+            <ul>
+                <li>
+                    <a href="/Student/Courses">Courses</a>
+                    <ul id="courses-header">
+                        <li><a href="/Student/Categories">Categories</a></li>
+                        <li><a href="/Student/Courses">Courses</a></li>
+                        <li><a href="/Student/Sections">Sections</a></li>
+                    </ul>
+                </li>
+                <li><a href="/Student/About">About us</a></li>
+            </ul>
+        </nav>
+        <div class="site-logo">
+            <img src="~/images/458910.png" alt="">
+            <a class="caption" href="/Student/Dashboard">Academy</a>
+        </div>
+        <label for="main-nav-toggle" id="toggle"><i class="fab fa-xing"></i>Menu</label>
+        <nav class="site-nav right">
+            <ul>
+                <li><a href="/Student/Contacts">Contacts</a></li>
+                <li>
+                    <a href="/Student/Dashboard">@student.Username</a>
+                    <ul id="username-header">
+                        <li><a href="/Student/Dashboard">Account</a></li>
+                        <li><a href="/Student/Settings">Settings</a></li>
+                        <li><a asp-controller="Student" asp-action="Logout">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>
+<div class="acount-dashboard">
+    <div class="wrapper">
+        <div class="left">
+            <a href="/Student/Dashboard"><img src="/images/blobby-green.svg"></img></a>
+            <div class="left-links">
+                <p>Wellcome, <a class="username" href="/Student/Dashboard">@student.Username</a></p>
+                <a class="bio">
+                    @if (student.Bio == "bio" || student.Bio == null)
+                    {
+                        <a class="bio-o" onclick="ShowBio()">Add your bio here..</a>
+                    }
+                    else
+                    {
+                        <a class="bio-written" onclick="ShowBio()">@student.Bio</a>
+                    }
+                </a>
+            </div>
+        </div>
+        <div class="right">
+            <a class="btn" onclick="ShowEdit()">Edit profile</a>
+            <p class="score">Points: @student.Points</p>
+        </div>
+    </div>
+</div>
+<div class="student-dashboard">
+    <div class="wrapper">
+        <div class="left">
+            @*.......UP.......*@
+            <p class="desc">My stuff</p>
+            <p><a class="stuff" onclick="ShowCourse()">Courses</a></p>
+            @*......Down......*@
+            <p class="desc">My Account</p>
+            <p><a class="acc" onclick="ShowProgress()">Progress</a></p>
+            <p><a class="acc" onclick="ShowProfile()">Profile</a></p>
+        </div>
+        <div id="student-course" class="right right-courses">
+            <p class="titlee">My courses</p>
+            @for (var i = 0; i < array.Count; i++)
+            {
+                string courseItem = array[i];
+                var arrayCourse = courseItem.Split('=', StringSplitOptions.RemoveEmptyEntries);
+                int idCourseItem = int.Parse(arrayCourse[0].ToString());
+                foreach (var course in courses)
+                {
+                    if (idCourseItem == course.Id)
+                    {
+                        <div class="box">
+                            <div class="up">
+                                <div class="leftt">
+                                    <p class="title">@course.Title</p>
+                                    @foreach (var category in categories)
+                                    {
+                                        if (category.Id == course.CategoryID)
+                                        {
+                                            <p class="category">Category: <a asp-controller="Student" asp-action="Category" asp-route-id="@category.Id">@category.Title</a></p>
+                                            break;
+                                        }
+                                    }
+                                </div>
+                                <div class="rightt">
+                                    @if (arrayCourse[1].ToString() == "1")
+                                    {
+                                        <p class="isfinishy">Finished</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="isfinishn">Not finished yet</p>
+                                    }
+                                </div>
+                            </div>
+                            <div class="down">
+                                @foreach (var sectionn in sections)
+                                {
+                                    if (sectionn.CourseID == course.Id)
+                                    {
+                                        foreach (var category in categories)
+                                        {
+                                            if (category.Id == course.CategoryID)
+                                            {
+                                                <div class="section">
+                                                    @if (@category.Title == "Math")
+                                                    {
+                                                        <p class="section-img"><img src="~/images/mathicon.jpg"></p>
+                                                        <p class="section-title">@sectionn.Title</p>
+                                                    }
+                                                    else if (@category.Title == "Science")
+                                                    {
+                                                        <p class="section-img"><img src="~/images/scienceicon.jpg"></p>
+                                                        <p class="section-title">@sectionn.Title</p>
+                                                    }
+                                                    else if (@category.Title == "Art")
+                                                    {
+                                                        <p class="section-img"><img src="~/images/articon.jpg"></p>
+                                                        <p class="section-title">@sectionn.Title</p>
+                                                    }
+                                                    else if (@category.Title == "Informatics")
+                                                    {
+                                                        <p class="section-img"><img src="~/images/informaticsicon.png"></p>
+                                                        <p class="section-title">@sectionn.Title</p>
+                                                    }
+                                                    else if (@category.Title == "Physics")
+                                                    {
+                                                        <p class="section-img"><img src="~/images/physicsicon.jpg"></p>
+                                                        <p class="section-title">@sectionn.Title</p>
+                                                    }
+                                                </div>
+                                            }
+                                        }
+                                        <span></span>
+                                    }
+                                }
+                            </div>
+                            @if (arrayCourse[1].ToString() == "1")
+                            {
+                                <p class="btn preview"><a asp-controller="Student" asp-action="EnrollCourse" asp-route-id="@course.Id">Preview</a></p>
+                            }
+                            else
+                            {
+                                <p class="btn resume"><a asp-controller="Student" asp-action="EnrollCourse" asp-route-id="@course.Id">Resume</a></p>
+                            }
+                        </div>
+                        break;
+                    }
+                }
+            }
+        </div>
+        <div id="student-progress" class="right right-progress">
+            <p class="titlee">My Progress</p>
+            @for (var i = 0; i < array.Count; i++)
+            {
+                var courseArray = array[i].Split('=', StringSplitOptions.RemoveEmptyEntries);
+                int courseId = int.Parse(courseArray[0].ToString());
+                foreach (var course in courses)
+                {
+                    if (courseId == course.Id)
+                    {
+                        <div class="progress-box">
+                            <p class="title">@course.Title</p>
+                            <div class="p-box">
+                                <span class="line start-line"></span><p class="start">Started on: <span class="bold">@courseArray[2].ToString()</span></p>
+                            </div>
+                            @if (courseArray[1].ToString() == "1")
+                            {
+                                <div class="p-box">
+                                    <span class="line end-line"></span><p class="end">Finished on: <span class="bold">@courseArray[3].ToString()</span></p>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="p-box">
+                                    <span class="line end-line"></span><p class="end">Not finished yed</p>
+                                </div>
+                            }
+                            <div class="p-box">
+                                <span class="line points-line"></span><p class="final">Points: <span class="bold">+@course.Points</span></p>
+                            </div>
+                            <p class="view"><a asp-controller="Student" asp-action="EnrollCourse" asp-route-id="@course.Id">Preview this course again</a></p>
+                        </div>
+                    }
+                }
+            }
+        </div>
+        <div id="student-profile" class="right right-profile">
+            <p class="titlee">My profile</p>
+            <div class="info-box">
+                <div class="up">
+                    <p class="cap">Information</p>
+                    <p class="desc"><i class="fa-solid fa-user"></i>Profile</p>
+                </div>
+                <div class="down">
+                    <p class="cap">User statistic</p>
+                    <div class="box">
+                        <p class="info-left">Date joined</p>
+                        <p class="info-right">@student.CreatedDate</p>
+                    </div>
+                    <div class="box">
+                        <p class="info-left">Time spent</p>
+                        <p class="info-right">@student.TimeSpent</p>
+                    </div>
+                    <div class="box">
+                        <p class="info-left">Progress</p>
+                        <p class="info-right">from @datesParsed[0].ToString("dd/MM/yyyy") to @datesParsed[datesParsed.Count - 1].ToString("dd/MM/yyyy")</p>
+                    </div>
+                </div>
+            </div>
+            <div class="info-box">
+                <div class="up">
+                    <p class="cap">Information</p>
+                    <p class="desc"><i class="fa-solid fa-code"></i>Courses</p>
+                </div>
+                <div class="down">
+                    <p class="cap">Course statistic</p>
+                    <div class="box">
+                        <p class="info-left">Course completed</p>
+                        @for (var i = 0; i < array.Count; i++)
+                        {
+                            var courseArray = array[i].Split('=', StringSplitOptions.RemoveEmptyEntries);
+                            if (courseArray[1].ToString() == "1")
+                            {
+                                counter++;
+                            }
+                        }
+                        <p class="info-right">@counter</p>
+                    </div>
+                    <div class="box">
+                        <p class="info-left">Energy points earned</p>
+                        <p class="info-right points">@student.Points</p>
+                    </div>
+                    <div class="box">
+                        <p class="info-left">Course enrolled</p>
+                        @if (array.Count != null)
+                        {
+                            <p class="info-right">@array.Count</p>
+                        }
+                        else
+                        {
+                            <p class="info-right">0</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

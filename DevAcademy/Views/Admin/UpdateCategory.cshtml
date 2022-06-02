@@ -1,0 +1,108 @@
+﻿@model Category
+@{
+    ViewData["Title"] = "Update Category";
+    Layout = "_LogAdmin";
+}
+@{
+    Admin admin = ViewData["Admin"] as Admin;
+    IEnumerable<Course> courses = ViewData["Courses"] as IEnumerable<Course>;
+    string courseText = null;
+    foreach (var course in courses)
+    {
+        if (course.CategoryID == @Model.Id)
+        {
+           courseText += "Id:" + @course.Id.ToString() + " " + "Title:" + @course.Title.ToString() + "\n";
+        }
+    }
+    IEnumerable<Admin> admins = ViewData["Admins"] as IEnumerable<Admin>;
+    string adminText = null;
+    foreach (var adminn in admins)
+    {
+        if (@Model.AdminID != null && @Model.AdminID == adminn.Id)
+        {
+            adminText = "Id:" + @adminn.Id.ToString() + " " + "Username:" + @adminn.Username.ToString();
+        }
+    }
+    IEnumerable<Teacher> teachers = ViewData["Teachers"] as IEnumerable<Teacher>;
+    string teacherText = null;
+    foreach (var teacher in teachers)
+    {
+        if (@Model.TeacherID != null && @Model.TeacherID == teacher.Id)
+        {
+            teacherText = "Id:" + @teacher.Id.ToString() + " " + "Username:" + @teacher.Username.ToString();
+        }
+    }
+}
+<div class="site-dashboard">
+    <div class="site-left">
+        <p class="site-title">Admin Dashboard</p>
+        <nav class="navigation-account">
+            <ul>
+                <li>Admin</li>
+                <li>
+                    <a href="">@admin.Username</a>
+                </li>
+            </ul>
+        </nav>
+        <nav class="navigation-admin">
+            <ul>
+                <li><a href="/Admin/Dashboard">Back</a></li>
+            </ul>
+        </nav>
+    </div>
+    <div class="site-right">
+        <form method="post" asp-action="UpdateCategory">
+            <input asp-for="Id" hidden/>
+            <input asp-for="AdminID" hidden/>
+            <input asp-for="TeacherID" hidden/>
+            <input asp-for="Courses" hidden/>
+            <div class="site-top">
+                <p class="caption">Update Category</p>
+            </div>
+            <div class="box-form">
+                <div asp-validation-summary="ModelOnly"></div>
+                <div class="form-group">
+                    <div class="box">
+                        <label asp-for="Title"></label>
+                        <input asp-for="Title" />
+                        <span asp-validation-for="Title"></span>
+                    </div>
+                    <div class="box">
+                        <label asp-for="Description"></label>
+                        <textarea asp-for="Description" rows="12" cols="55"></textarea>
+                        <span asp-validation-for="Description"></span>
+                    </div>
+                    <div class="box">
+                        <label asp-for="Courses"></label>
+                        <textarea rows="10" cols="40" disabled>@courseText</textarea>
+                    </div>
+                    @if (@Model.AdminID != null && @Model.AdminID != 0)
+                    {
+                        <div class="box">
+                            <label asp-for="AdminID"></label>
+                            <textarea rows="2" cols="45" disabled>@adminText</textarea>
+                        </div>
+                    }
+                    else if (@Model.TeacherID != null && @Model.TeacherID != 0)
+                    {
+                        <div class="box">
+                            <label asp-for="TeacherID"></label>
+                            <textarea rows="2" cols="45" disabled>@teacherText</textarea>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="box">
+                            <label>Created by</label>
+                            <textarea rows="2" cols="25" disabled>The creator was deactivated</textarea>
+                        </div>
+                    }
+                    <div class="box-buttons">
+                        <input type="submit" class="update" value="Update"/>
+                        <a class="" href="/Admin/Dashboard">Back</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

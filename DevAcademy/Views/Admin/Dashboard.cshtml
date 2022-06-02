@@ -1,0 +1,643 @@
+﻿@using DevAcademy.Cryptography
+@{
+    ViewData["Title"] = "Dev Academy Admin Dashboard";
+    Layout = "_LogAdmin";
+}
+@{
+    Admin admin = ViewData["Admin"] as Admin;
+    IEnumerable<User> users = ViewData["Users"] as IEnumerable<User>;
+    IEnumerable<Admin> admins = ViewData["Admins"] as IEnumerable<Admin>;
+    IEnumerable<Teacher> teachers = ViewData["Teachers"] as IEnumerable<Teacher>;
+    IEnumerable<Student> students = ViewData["Students"] as IEnumerable<Student>;
+    IEnumerable<Category> categories = ViewData["Categories"] as IEnumerable<Category>;
+    IEnumerable<Course> courses = ViewData["Courses"] as IEnumerable<Course>;
+    IEnumerable<Section> sections = ViewData["Sections"] as IEnumerable<Section>;
+    bool isfind = false;
+
+    List<string> arrayy = new List<string>();
+    int counter = 0;
+
+    List<string> dates = new List<string>();
+
+    List<DateTime> datesParsed = new List<DateTime>();
+
+}
+<div class="site-dashboard">
+    <div class="site-left">
+        <p class="site-title">Admin Dashboard</p>
+        <nav class="navigation-account">
+            <ul>
+                <li>Admin</li>
+                <li>
+                    <a href="">@admin.Username</a>
+                </li>
+                <li><a href="/Home/Index">Logout</a></li>
+            </ul>
+        </nav>
+        <nav class="navigation-admin">
+            <ul>
+                <li><a onclick="ShowUsers()">Users</a></li>
+                <li><a onclick="ShowAdmins()">Admins</a></li>
+                <li><a onclick="ShowTeachers()">Teachers</a></li>
+                <li><a onclick="ShowStudents()">Students</a></li>
+                <li><a onclick="ShowCategories()">Categories</a></li>
+                <li><a onclick="ShowCourses()">Courses</a></li>
+                <li><a onclick="ShowSections()">Sections</a></li>
+            </ul>
+        </nav>
+    </div>
+    <div class="site-right">
+        <div id="user-section">
+            <div class="site-top">
+                <p class="caption">Section Users</p>
+                <a class="btt add" href="/Admin/AddUser">Add User</a>
+            </div>
+            @if (@users.Count() > 0)
+            {
+                <table class="dashboard-table" style="">
+                    <thead>
+                        <tr>
+                            <th>Identical</th>
+                            <th>First name</th>
+                            <th>Last Name</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Account Type</th>
+                            <th>Password</th>
+                            <th>Creted Date</th>
+                            <th>Options</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in @users)
+                        {
+                            <tr>
+                                <td>@user.Id</td>
+                                <td>@user.FirstName</td>
+                                <td>@user.LastName</td>
+                                <td>@user.Username</td>
+                                <td>@user.Email</td>
+                                <td>@user.AccountType</td>
+                                <td>@Crypting.DeCrypt(@user.Password)</td>
+                                <td>@user.CreatedDate</td>
+                                <td>
+                                    <div class="box">
+                                        <a class="update" asp-controller="Admin" asp-route-Id="@user.Id" asp-action="UpdateUser">Update</a>
+                                        <a class="delete" asp-controller="Admin" asp-route-Id="@user.Id" asp-action="DeleteUser">Delete</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+        <div id="admin-section">
+            <div class="site-top">
+                <p class="caption">Section Admins</p>
+                <a class="btt add" href="/Admin/AddAdmin">Add Admin</a>
+            </div>
+            @if (@admins.Count() > 0)
+            {
+                <table class="dashboard-table" style="">
+                    <thead>
+                        <tr>
+                            <th>Identical</th>
+                            <th>First name</th>
+                            <th>Last Name</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Account Type</th>
+                            <th>Password</th>
+                            <th>Created Date</th>
+                            <th>Categories</th>
+                            <th>Courses</th>
+                            <th>Sections</th>
+                            <th>Options</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var adminn in @admins)
+                        {
+                            <tr>
+                                <td>@adminn.Id</td>
+                                <td>@adminn.FirstName</td>
+                                <td>@adminn.LastName</td>
+                                <td>@adminn.Username</td>
+                                <td>@adminn.Email</td>
+                                <td>@adminn.AccountType</td>
+                                <td>@Crypting.DeCrypt(@admin.Password)</td>
+                                <td>@adminn.CreatedDate</td>
+                                <td>
+                                    @foreach (var category in categories)
+                                    {
+                                        if (category.AdminID == adminn.Id)
+                                        {
+                                            <p>Id: @category.Id</p>
+                                            <p>Title: @category.Title</p>
+                                            <p class="line"></p>
+                                        }
+                                    }
+                                </td>
+                                <td>
+                                    @foreach (var course in courses)
+                                    {
+                                        if (course.AdminID == adminn.Id)
+                                        {
+                                            <p>Id: @course.Id</p>
+                                            <p>Title: @course.Title</p>
+                                            <p class="line"></p>
+                                        }
+                                    }
+                                </td>
+                                <td>
+                                    @foreach (var sectionn in sections)
+                                    {
+                                        if (sectionn.AdminID == adminn.Id)
+                                        {
+                                            <p>Id: @sectionn.Id</p>
+                                            <p>Title: @sectionn.Title</p>
+                                            <p class="line"></p>
+                                        }
+                                    }
+                                </td>
+                                <td>
+                                    <div class="box">
+                                        <a class="update" asp-controller="Admin" asp-route-Id="@adminn.Id" asp-action="UpdateAdmin">Update</a>
+                                        <a class="delete" asp-controller="Admin" asp-route-Id="@adminn.Id" asp-action="DeleteAdmin">Delete</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+        <div id="teacher-section">
+            <div class="site-top">
+                <p class="caption">Section Teachers</p>
+                <a class="btt add" href="/Admin/AddTeacher">Add Teacher</a>
+            </div>
+            @if (@teachers.Count() > 0)
+            {
+                <table class="dashboard-table" style="">
+                    <thead>
+                        <tr>
+                            <th>Identical</th>
+                            <th>First name</th>
+                            <th>Last Name</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Account Type</th>
+                            <th>Password</th>
+                            <th>Created Date</th>
+                            <th>Categories</th>
+                            <th>Courses</th>
+                            <th>Sections</th>
+                            <th>Options</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var teacher in @teachers)
+                        {
+                            <tr>
+                                <td>@teacher.Id</td>
+                                <td>@teacher.FirstName</td>
+                                <td>@teacher.LastName</td>
+                                <td>@teacher.Username</td>
+                                <td>@teacher.Email</td>
+                                <td>@teacher.AccountType</td>
+                                <td>@Crypting.DeCrypt(@admin.Password)</td>
+                                <td>@teacher.CreatedDate</td>
+                                <td>
+                                    @foreach (var category in categories)
+                                    {
+                                        if (category.TeacherID == teacher.Id)
+                                        {
+                                            <p>Id: @category.Id</p>
+                                            <p>Title: @category.Title</p>
+                                            <p class="line"></p>
+                                        }
+                                    }
+                                </td>
+                                <td>
+                                    @foreach (var course in courses)
+                                    {
+                                        if (course.TeacherID == teacher.Id)
+                                        {
+                                            <p>Id: @course.Id</p>
+                                            <p>Title: @course.Title</p>
+                                            <p class="line"></p>
+                                        }
+                                    }
+                                </td>
+                                <td>
+                                    @foreach (var sectionn in sections)
+                                    {
+                                        if (sectionn.TeacherID == teacher.Id)
+                                        {
+                                            <p>Id: @sectionn.Id</p>
+                                            <p>Title: @sectionn.Title</p>
+                                            <p class="line"></p>
+                                        }
+                                    }
+                                </td>
+                                <td>
+                                    <div class="box">
+                                        <a class="update" asp-controller="Admin" asp-route-Id="@teacher.Id" asp-action="UpdateTeacher">Update</a>
+                                        <a class="delete" asp-controller="Admin" asp-route-Id="@teacher.Id" asp-action="DeleteTeacher">Delete</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+        <div id="student-section">
+            <div class="site-top">
+                <p class="caption">Section Students</p>
+                <a class="btt add" href="/Admin/AddStudent">Add Student</a>
+            </div>
+            @if (@students.Count() > 0)
+            {
+                <table class="dashboard-table" style="">
+                    <thead>
+                        <tr>
+                            <th>Identical</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Account Type</th>
+                            <th>Password</th>
+                            <th>Bio</th>
+                            <th>Points</th>
+                            <th>Progress</th>
+                            <th>Time Spent</th>
+                            <th>Creted Date</th>
+                            <th>Courses</th>
+                            <th>Options</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var student in @students)
+                        {
+                            <tr>
+                                <td>@student.Id</td>
+                                <td>@student.FirstName</td>
+                                <td>@student.LastName</td>
+                                <td>@student.Username</td>
+                                <td>@student.Email</td>
+                                <td>@student.AccountType</td>
+                                <td>@Crypting.DeCrypt(@student.Password)</td>
+                                <td>@student.Bio</td>
+                                <td>@student.Points</td>
+                                <td>
+                                    @if (student.CoursesIDs != null)
+                                    {
+                                        var coursess = student.CoursesIDs.Split(',', StringSplitOptions.RemoveEmptyEntries).ToArray();
+                                        arrayy = coursess.ToList();
+
+                                        for (var i = 0; i < arrayy.Count; i++)
+                                        {
+                                            var arr = arrayy[i].Split('=', StringSplitOptions.RemoveEmptyEntries);
+                                            if (arr[1].ToString() == "0")
+                                            {
+                                                dates.Add(arr[2]);
+                                            }
+                                            else
+                                            {
+                                                dates.Add(arr[2]);
+                                                dates.Add(arr[3]);
+                                            }
+                                        }
+
+                                        for (var i = 0; i < dates.Count; i++)
+                                        {
+                                            datesParsed.Add(DateTime.Parse(dates[i]));
+                                        }
+                                        datesParsed.Sort();
+
+                                        <p>from @datesParsed[0].ToString("dd/MM/yyyy") to @datesParsed[datesParsed.Count - 1].ToString("dd/MM/yyyy")</p>
+                                    }
+                                    else
+                                    {
+
+                                    }
+                                </td>
+                                <td>@student.TimeSpent</td>
+                                <td>@student.CreatedDate</td>
+                                <td>
+                                    @if (student.CoursesIDs != null)
+                                    {
+                                        var array = student.CoursesIDs.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                                        for (var i = 0; i < array.Length; i++)
+                                        {
+                                            var courseArray = array[i].Split('=', StringSplitOptions.RemoveEmptyEntries);
+                                            int courseId = int.Parse(courseArray[0].ToString());
+                                            foreach (var course in courses)
+                                            {
+                                                if (courseId == course.Id)
+                                                {
+                                                    <p>Id: @course.Id</p>
+                                                    <p>Title: @course.Title</p>
+                                                    <p class="line"></p>
+                                                }
+                                            }
+                                        }
+                                    }
+                                </td>
+                                <td>
+                                    <div class="box">
+                                        <a class="update" asp-controller="Admin" asp-route-Id="@student.Id" asp-action="UpdateStudent">Update</a>
+                                        <a class="delete" asp-controller="Admin" asp-route-Id="@student.Id" asp-action="DeleteStudent">Delete</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+        <div id="category-section">
+            <div class="site-top">
+                <p class="caption">Section Categories</p>
+                <a class="btt create" href="/Admin/CreateCategory">Create Category</a>
+            </div>
+            @if (@categories.Count() > 0)
+            {
+                <table class="dashboard-table" style="">
+                    <thead>
+                        <tr>
+                            <th>Identical</th>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Courses in this category</th>
+                            <th>Created by</th>
+                            <th>Options</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var category in @categories)
+                        {
+                            <tr>
+                                <td>@category.Id</td>
+                                <td>@category.Title</td>
+                                <td>@category.Description</td>
+                                <td>
+                                    @foreach (var course in courses)
+                                    {
+                                        @if (course.CategoryID == category.Id)
+                                        {
+                                            <p>Id: @course.Id</p>
+                                            <p>Title: @course.Title</p>
+                                            <p class="line"></p>
+                                        }
+                                    }
+                                </td>
+                                <td>
+                                    @if (@category.AdminID != null)
+                                    {
+                                        <p>Admin</p>
+                                        <p>Id:@category.AdminID</p>
+                                        @foreach (var adminn in admins)
+                                        {
+                                            if (@category.AdminID == adminn.Id)
+                                            {
+                                                <p>Username: @adminn.Username</p>
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    else if (@category.TeacherID != null)
+                                    {
+                                        <p>Teacher</p>
+                                        <p>Id: @category.TeacherID</p>
+                                        @foreach (var teacher in teachers)
+                                        {
+                                            if (@category.TeacherID == teacher.Id)
+                                            {
+                                                <p>Username: @teacher.Username</p>
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <p>The creator was deactivated</p>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="box">
+                                        <a class="update" asp-controller="Admin" asp-route-Id="@category.Id" asp-action="UpdateCategory">Update</a>
+                                        <a class="delete" asp-controller="Admin" asp-route-Id="@category.Id" asp-action="DeleteCategory">Delete</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+        <div id="course-section">
+            <div class="site-top">
+                <p class="caption">Section Courses</p>
+                <a class="btt create" href="/Admin/CreateCourse">Create Course</a>
+            </div>
+            @if (@courses.Count() > 0)
+            {
+                <table class="dashboard-table" style="">
+                    <thead>
+                        <tr>
+                            <th>Identical</th>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Points</th>
+                            <th>CreatedDate</th>
+                            <th>Sections</th>
+                            <th>Category</th>
+                            <th>Enrolled Students</th>
+                            <th>Createdby</th>
+                            <th>Options</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var course in @courses)
+                        {
+                            <tr>
+                                <td>@course.Id</td>
+                                <td>@course.Title</td>
+                                <td>@course.Description</td>
+                                <td>@course.Points</td>
+                                <td>@course.CreatedDate</td>
+                                <td>
+                                    @foreach (var sectionn in sections)
+                                    {
+                                        if (course.Id == sectionn.CourseID)
+                                        {
+                                            <p>Id: @sectionn.Id</p>
+                                            <p>Title: @sectionn.Title</p>
+                                            <p class="line"></p>
+                                        }
+                                    }
+                                </td>
+                                <td>
+                                    @if (@course.CategoryID != 0)
+                                    {
+                                        <p>Id: @course.CategoryID</p>
+                                        foreach (var category in categories)
+                                        {
+                                            if (category.Id == course.CategoryID)
+                                            {
+                                                <p>Title: @category.Title</p>
+                                            }
+                                        }
+                                    }
+                                </td>
+                                <td>
+                                    @if (course.StudentsIDs != null)
+                                    {
+                                        var array = course.StudentsIDs.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                                        for (var i = 0; i < array.Length; i++)
+                                        {
+                                            foreach (var student in students)
+                                            {
+                                                if (int.Parse(array[i].ToString()) == student.Id)
+                                                {
+                                                    <p>Id: @student.Id Name:@student.FirstName @student.LastName</p>
+                                                    <p>Username: @student.Username</p>
+                                                    <p class="line"></p>
+                                                }
+                                            }
+                                        }
+                                    }
+                                </td>
+                                <td>
+                                    @if (@course.AdminID != null)
+                                    {
+                                        <p>Admin</p>
+                                        <p>Id: @course.AdminID</p>
+                                        @foreach (var adminn in admins)
+                                        {
+                                            if (@course.AdminID == adminn.Id)
+                                            {
+                                                <p>Username: @adminn.Username</p>
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    else if (@course.TeacherID != null)
+                                    {
+                                        <p>Teacher</p>
+                                        <p>Id: @course.TeacherID</p>
+                                        @foreach (var teacher in teachers)
+                                        {
+                                            if (@course.TeacherID == teacher.Id)
+                                            {
+                                                <p>Username: @teacher.Username</p>
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <p>The creator was deactivated</p>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="box">
+                                        <a class="update" asp-controller="Admin" asp-route-Id="@course.Id" asp-action="UpdateCourse">Update</a>
+                                        <a class="delete" asp-controller="Admin" asp-route-Id="@course.Id" asp-action="DeleteCourse">Delete</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+        <div id="section-section">
+            <div class="site-top">
+                <p class="caption">Section Sections</p>
+                <a class="btt create" href="/Admin/CreateSection">Create Section</a>
+            </div>
+            @if (@sections.Count() > 0)
+            {
+                <table class="dashboard-table" style="">
+                    <thead>
+                        <tr>
+                            <th>Identical</th>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Course</th>
+                            <th>Created by</th>
+                            <th>Options</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var sectionn in @sections)
+                        {
+                            <tr>
+                                <td>@sectionn.Id</td>
+                                <td>@sectionn.Title</td>
+                                <td>@sectionn.Description</td>
+                                <td>
+                                    @if (@sectionn.CourseID != 0)
+                                    {
+                                        <p>Id: @sectionn.CourseID</p>
+                                        foreach (var course in courses)
+                                        {
+                                            if (course.Id == sectionn.CourseID)
+                                            {
+                                                <p>Title: @course.Title</p>
+                                            }
+                                        }
+                                    }
+                                </td>
+                                <td>
+                                    @if (@sectionn.AdminID != null)
+                                    {
+                                        <p>Admin</p>
+                                        <p>Id: @sectionn.AdminID</p>
+                                        @foreach (var adminn in admins)
+                                        {
+                                            if (@sectionn.AdminID == adminn.Id)
+                                            {
+                                                <p>Username: @adminn.Username</p>
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    else if (@sectionn.TeacherID != null)
+                                    {
+                                        <p>Teacher</p>
+                                        <p>Id: @sectionn.TeacherID</p>
+                                        @foreach (var teacher in teachers)
+                                        {
+                                            if (@sectionn.TeacherID == teacher.Id)
+                                            {
+                                                <p>Username: @teacher.Username</p>
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <p>The creator was deactivated</p>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="box">
+                                        <a class="update" asp-controller="Admin" asp-route-Id="@sectionn.Id" asp-action="UpdateSection">Update</a>
+                                        <a class="delete" asp-controller="Admin" asp-route-Id="@sectionn.Id" asp-action="DeleteSection">Delete</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</div>

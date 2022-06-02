@@ -1,0 +1,69 @@
+﻿@model User
+@{
+    ViewData["Title"] = "Register Dev Academy";
+    Layout = "_Site";
+}
+<div class="site-login">
+    <div class="container" id="container1">
+        <div class="form-container sign-up-container">
+            <form id="registerForm" method="post">
+                <h2>Create Account</h2>
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <input asp-for="@Model.FirstName" class="form-control" autocomplete="firstName" aria-required="true" placeholder="First Name" />
+                    @*<label asp-for="Input.FirstName"></label>*@
+                    <span asp-validation-for="@Model.FirstName" class="validation"></span>
+                </div>
+                <div class="form-group">
+                    <input asp-for="@Model.LastName" class="form-control" autocomplete="lastName" aria-required="true" placeholder="Last Name" />
+                    @*<label asp-for="Input.LastName"></label>*@
+                    <span asp-validation-for="@Model.LastName" class="validation"></span>
+                </div>
+                <div class="form-group">
+                    <input asp-for="@Model.Username" class="form-control" autocomplete="username" aria-required="true" placeholder="Username" />
+                    @*<label asp-for="Input.UserName"></label>*@
+                    <span asp-validation-for="@Model.Username" class="validation"></span>
+                </div>
+                <div class="form-group">
+                    <input asp-for="@Model.Email" class="form-control" autocomplete="email" aria-required="true" placeholder="Email" />
+                    @*<label asp-for="Input.Email"></label>*@
+                    <span asp-validation-for="@Model.Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <select class="form-control" autocomplete="acountType" aria-required="true" placeholder="Account Type">
+                        <option selected disabled>Select account type</option>
+                        <option value="Admin" name="Admin">Admin</option>
+                        <option value="Teacher" name="Teacher">Teacher</option>
+                        <option value="Student" name="Student">Student</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input asp-for="@Model.AccountType" class="form-control" autocomplete="acountType" aria-required="true" placeholder="Confirnm Account Type" />
+                    @*<label asp-for="Input.Password"></label>*@
+                    <span asp-validation-for="@Model.AccountType" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="password" asp-for="@Model.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Password" />
+                    @*<label asp-for="Input.Password"></label>*@
+                    <span asp-validation-for="@Model.Password" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="password" asp-for="@Model.ConfirmPassword" class="form-control" autocomplete="confirm-password" aria-required="true" placeholder="Confirm Password" />
+                    @*<label asp-for="Input.ConfirmPassword"></label>*@
+                    <span asp-validation-for="@Model.ConfirmPassword" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <button id="registerSubmit" type="submit" class="">Register</button>
+                </div>
+            </form>
+        </div>
+        <div class="overlay-panel overlay-right">
+            <h1>Welcome Back!</h1>
+            <p>To keep connected with us please login with your personal info</p>
+            <a class="ghost" href="/Home/Login">Sign In</a>
+        </div>
+    </div>
+</div>
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+}

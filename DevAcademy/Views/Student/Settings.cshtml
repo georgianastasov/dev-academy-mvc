@@ -1,0 +1,150 @@
+﻿@using DevAcademy.Cryptography
+@model Student
+@{
+    ViewData["Title"] = "Settings";
+    Layout = "_LogStudent";
+}
+@{
+    IEnumerable<Course> courses = ViewData["Courses"] as IEnumerable<Course>;
+    string courseText = null;
+    if (Model.CoursesIDs != null)
+    {
+        var array = Model.CoursesIDs.Split(',', StringSplitOptions.RemoveEmptyEntries);
+        for (var i = 0; i < array.Length; i++)
+        {
+            var courseArray = array[i].Split('=', StringSplitOptions.RemoveEmptyEntries);
+            int courseId = int.Parse(courseArray[0].ToString());
+            foreach (var course in courses)
+            {
+                if (courseId == course.Id)
+                {
+                    courseText += "Id:" + @course.Id.ToString() + " " + "Title:" + @course.Title.ToString() + "\n";
+                }
+            }
+        }
+    }
+}
+<input type="checkbox" name="main-nav-toggle" id="main-nav-toggle" checked />
+<header id="header-down" class="site-header">
+    <div class="wrapper">
+        <nav class="site-nav left">
+            <ul>
+                <li>
+                    <a href="/Student/Courses">Courses</a>
+                    <ul id="courses-header">
+                        <li><a href="/Student/Categories">Categories</a></li>
+                        <li><a href="/Student/Courses">Courses</a></li>
+                        <li><a href="/Student/Sections">Sections</a></li>
+                    </ul>
+                </li>
+                <li><a href="/Student/About">About us</a></li>
+            </ul>
+        </nav>
+        <div class="site-logo">
+            <img src="~/images/458910.png" alt="">
+            <a class="caption" href="/Student/Dashboard">Academy</a>
+        </div>
+        <label for="main-nav-toggle" id="toggle"><i class="fab fa-xing"></i>Menu</label>
+        <nav class="site-nav right">
+            <ul>
+                <li><a href="/Student/Contacts">Contacts</a></li>
+                <li>
+                    <a href="/Student/Dashboard">@Model.Username</a>
+                    <ul id="username-header">
+                        <li><a href="/Student/Dashboard">Account</a></li>
+                        <li><a href="/Student/Settings">Settings</a></li>
+                        <li><a asp-controller="Student" asp-action="Logout">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>
+<div class="acount-dashboard">
+    <div class="wrapper">
+        <div class="left">
+            <a href="/Student/Dashboard"><img src="/images/blobby-green.svg"></img></a>
+            <div class="left-links">
+                <p>Wellcome, <a class="username" href="/Student/Dashboard">@Model.Username</a></p>
+                <a class="bio">
+                    @if (@Model.Bio == "bio" || @Model.Bio == null)
+                    {
+                        
+                    }
+                    else
+                    {
+                        <a class="bio-written" onclick="ShowBio()">@Model.Bio</a>
+                    }
+                </a>
+            </div>
+        </div>
+        <div class="right">
+            <p class="score">Points: @Model.Points</p>
+        </div>
+    </div>
+</div>
+<div class="teacher-form">
+    <div class="wrapper">
+        <form method="post" asp-action="Settings">
+            <input asp-for="Id" hidden/>
+            <input asp-for="AccountType" hidden/>
+            <input asp-for="Points" hidden/>
+            <input asp-for="Progress" hidden/>
+            <input asp-for="TimeSpent" hidden/>
+            <input asp-for="CreatedDate" hidden/>
+            <input asp-for="Courses" hidden/>
+            <input asp-for="CoursesIDs" hidden/>
+            <div class="site-top">
+                <p class="caption">Settings</p>
+            </div>
+            <div class="box-form">
+                <div asp-validation-summary="ModelOnly"></div>
+                <div class="form-group">
+                    <div class="box">
+                        <label asp-for="FirstName"></label>
+                        <input asp-for="FirstName" />
+                        <span asp-validation-for="FirstName"></span>
+                    </div>
+                    <div class="box">
+                        <label asp-for="LastName"></label>
+                        <input asp-for="LastName" />
+                        <span asp-validation-for="LastName"></span>
+                    </div>
+                    <div class="box">
+                        <label asp-for="Username"></label>
+                        <input asp-for="Username" />
+                        <span asp-validation-for="Username"></span>
+                    </div>
+                    <div class="box">
+                        <label asp-for="Email"></label>
+                        <input asp-for="Email" />
+                        <span asp-validation-for="Email"></span>
+                    </div>
+                    <div class="box">
+                        <label asp-for="Bio"></label>
+                        <textarea asp-for="Bio" rows="8" cols="45"></textarea>
+                        <span asp-validation-for="Bio"></span>
+                    </div>
+                    <div class="box">
+                        <label asp-for="Password"></label>
+                        <input asp-for="Password" value="@Crypting.DeCrypt(@Model.Password)"/>
+                        <span asp-validation-for="Password"></span>
+                    </div>
+                    <div class="box">
+                        <label asp-for="ConfirmPassword"></label>
+                        <input asp-for="ConfirmPassword" value="@Crypting.DeCrypt(@Model.ConfirmPassword)"/>
+                        <span asp-validation-for="ConfirmPassword"></span>
+                    </div>
+                    <div class="box">
+                        <label asp-for="CoursesIDs"></label>
+                        <textarea rows="10" cols="45" disabled>@courseText</textarea>
+                    </div>
+                    <div class="box-buttons">
+                        <input type="submit" class="update" value="Update"/>
+                        <a class="" href="/Student/Dashboard">Back</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,291 @@
+﻿@model Teacher
+@{
+    ViewData["Title"] = "Dev Academy Student Profile";
+    Layout = "_LogTeacher";
+}
+@{
+    Student student = ViewData["Student"] as Student;
+    IEnumerable<Category> categories = ViewData["Categories"] as IEnumerable<Category>;
+    IEnumerable<Course> courses = ViewData["Courses"] as IEnumerable<Course>;
+    IEnumerable<Section> sections = ViewData["Sections"] as IEnumerable<Section>;
+
+    List<string> array = new List<string>();
+    if (student.CoursesIDs != null)
+    {
+        var array2 = student.CoursesIDs.Split(',', StringSplitOptions.RemoveEmptyEntries).ToArray();
+        array = array2.ToList();
+    }
+    int counter = 0;
+
+    List<string> dates = new List<string>();
+    for (var i = 0; i < array.Count; i++)
+    {
+        var arr = array[i].Split('=', StringSplitOptions.RemoveEmptyEntries);
+        if (arr[1].ToString() == "0")
+        {
+            dates.Add(arr[2]);
+        }
+        else
+        {
+            dates.Add(arr[2]);
+            dates.Add(arr[3]);
+        }
+    }
+
+    List<DateTime> datesParsed = new List<DateTime>();
+    for (var i = 0; i < dates.Count; i++)
+    {
+        datesParsed.Add(DateTime.Parse(dates[i]));
+    }
+    datesParsed.Sort();
+}
+<input type="checkbox" name="main-nav-toggle" id="main-nav-toggle" checked />
+<header id="header-down" class="site-header">
+    <div class="wrapper">
+        <nav class="site-nav left">
+            <ul>
+                <li>
+                    <a href="/Teacher/Courses">Courses</a>
+                    <ul id="courses-header">
+                        <li><a href="/Teacher/Categories">Categories</a></li>
+                        <li><a href="/Teacher/Courses">Courses</a></li>
+                        <li><a href="/Teacher/Sections">Sections</a></li>
+                    </ul>
+                </li>
+                <li><a href="/Teacher/About">About us</a></li>
+            </ul>
+        </nav>
+        <div class="site-logo">
+            <img src="~/images/458910.png" alt="">
+            <a class="caption" href="/Teacher/Dashboard">Academy</a>
+        </div>
+        <label for="main-nav-toggle" id="toggle"><i class="fab fa-xing"></i>Menu</label>
+        <nav class="site-nav right">
+            <ul>
+                <li><a href="/Teacher/Contacts">Contacts</a></li>
+                <li>
+                    <a href="/Teacher/Dashboard">@Model.Username</a>
+                    <ul id="username-header">
+                        <li><a href="/Teacher/Dashboard">Account</a></li>
+                        <li><a href="/Teacher/Settings">Settings</a></li>
+                        <li><a href="/Home/Index">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>
+<div class="acount-dashboard">
+    <div class="wrapper">
+        <div class="left">
+            <a><img src="/images/blobby-green.svg"></img></a>
+            <div class="left-links">
+                <p>Student, <a class="username">@student.Username</a></p>
+                <a class="bio">
+                    @if (student.Bio == "bio" || student.Bio == null)
+                    {
+                        
+                    }
+                    else
+                    {
+                        <a class="bio-written">@student.Bio</a>
+                    }
+                </a>
+            </div>
+        </div>
+        <div class="right">
+            <p class="score">Points: @student.Points</p>
+        </div>
+    </div>
+</div>
+<div class="student-dashboard">
+    <div class="wrapper">
+        <div class="left">
+            @*.......UP.......*@
+            <p class="desc">Stuff</p>
+            <p><a class="stuff" onclick="ShowCourse()">Courses</a></p>
+            @*......Down......*@
+            <p class="desc">Account</p>
+            <p><a class="acc" onclick="ShowProgress()">Progress</a></p>
+            <p><a class="acc" onclick="ShowProfile()">Profile</a></p>
+        </div>
+        <div id="student-course" class="right right-courses">
+            <p class="titlee">Courses</p>
+            @for (var i = 0; i < array.Count; i++)
+            {
+                string courseItem = array[i];
+                var arrayCourse = courseItem.Split('=', StringSplitOptions.RemoveEmptyEntries);
+                int idCourseItem = int.Parse(arrayCourse[0].ToString());
+                foreach (var course in courses)
+                {
+                    if (idCourseItem == course.Id)
+                    {
+                        <div class="box">
+                            <div class="up">
+                                <div class="leftt">
+                                    <p class="title">@course.Title</p>
+                                    @foreach (var category in categories)
+                                    {
+                                        if (category.Id == course.CategoryID)
+                                        {
+                                            <p class="category">Category: <a asp-controller="Teacher" asp-action="Category" asp-route-id="@category.Id">@category.Title</a></p>
+                                            break;
+                                        }
+                                    }
+                                </div>
+                                <div class="rightt">
+                                    @if (arrayCourse[1].ToString() == "1")
+                                    {
+                                        <p class="isfinishy">Finished</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="isfinishn">Not finished yet</p>
+                                    }
+                                </div>
+                            </div>
+                            <div class="down">
+                                @foreach (var sectionn in sections)
+                                {
+                                    if (sectionn.CourseID == course.Id)
+                                    {
+                                        foreach (var category in categories)
+                                        {
+                                            if (category.Id == course.CategoryID)
+                                            {
+                                                <div class="section">
+                                                    @if (@category.Title == "Math")
+                                                    {
+                                                        <p class="section-img"><img src="~/images/mathicon.jpg"></p>
+                                                        <p class="section-title">@sectionn.Title</p>
+                                                    }
+                                                    else if (@category.Title == "Science")
+                                                    {
+                                                        <p class="section-img"><img src="~/images/scienceicon.jpg"></p>
+                                                        <p class="section-title">@sectionn.Title</p>
+                                                    }
+                                                    else if (@category.Title == "Art")
+                                                    {
+                                                        <p class="section-img"><img src="~/images/articon.jpg"></p>
+                                                        <p class="section-title">@sectionn.Title</p>
+                                                    }
+                                                    else if (@category.Title == "Informatics")
+                                                    {
+                                                        <p class="section-img"><img src="~/images/informaticsicon.png"></p>
+                                                        <p class="section-title">@sectionn.Title</p>
+                                                    }
+                                                    else if (@category.Title == "Physics")
+                                                    {
+                                                        <p class="section-img"><img src="~/images/physicsicon.jpg"></p>
+                                                        <p class="section-title">@sectionn.Title</p>
+                                                    }
+                                                </div>
+                                            }
+                                        }
+                                        <span></span>
+                                    }
+                                }
+                            </div>
+                        </div>
+                        break;
+                    }
+                }
+            }
+        </div>
+        <div id="student-progress" class="right right-progress">
+            <p class="titlee">Progress</p>
+            @for (var i = 0; i < array.Count; i++)
+            {
+                var courseArray = array[i].Split('=', StringSplitOptions.RemoveEmptyEntries);
+                int courseId = int.Parse(courseArray[0].ToString());
+                foreach (var course in courses)
+                {
+                    if (courseId == course.Id)
+                    {
+                        <div class="progress-box">
+                            <p class="title">@course.Title</p>
+                            <div class="p-box">
+                                <span class="line start-line"></span><p class="start">Started on: <span class="bold">@courseArray[2].ToString()</span></p>
+                            </div>
+                            @if (courseArray[1].ToString() == "1")
+                            {
+                                <div class="p-box">
+                                    <span class="line end-line"></span><p class="end">Finished on: <span class="bold">@courseArray[3].ToString()</span></p>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="p-box">
+                                    <span class="line end-line"></span><p class="end">Not finished yed</p>
+                                </div>
+                            }
+                            <div class="p-box">
+                                <span class="line points-line"></span><p class="final">Points: <span class="bold">+@course.Points</span></p>
+                            </div>
+                        </div>
+                    }
+                }
+            }
+        </div>
+        <div id="student-profile" class="right right-profile">
+            <p class="titlee">Profile</p>
+            <div class="info-box">
+                <div class="up">
+                    <p class="cap">Information</p>
+                    <p class="desc"><i class="fa-solid fa-user"></i>Profile</p>
+                </div>
+                <div class="down">
+                    <p class="cap">User statistic</p>
+                    <div class="box">
+                        <p class="info-left">Date joined</p>
+                        <p class="info-right">@student.CreatedDate</p>
+                    </div>
+                    <div class="box">
+                        <p class="info-left">Time spent</p>
+                        <p class="info-right">@student.TimeSpent</p>
+                    </div>
+                    <div class="box">
+                        <p class="info-left">Progress</p>
+                        <p class="info-right">from @datesParsed[0].ToString("dd/MM/yyyy") to @datesParsed[datesParsed.Count - 1].ToString("dd/MM/yyyy")</p>
+                    </div>
+                </div>
+            </div>
+            <div class="info-box">
+                <div class="up">
+                    <p class="cap">Information</p>
+                    <p class="desc"><i class="fa-solid fa-code"></i>Courses</p>
+                </div>
+                <div class="down">
+                    <p class="cap">Course statistic</p>
+                    <div class="box">
+                        <p class="info-left">Course completed</p>
+                        @for (var i = 0; i < array.Count; i++)
+                        {
+                            var courseArray = array[i].Split('=', StringSplitOptions.RemoveEmptyEntries);
+                            if (courseArray[1].ToString() == "1")
+                            {
+                                counter++;
+                            }
+                        }
+                        <p class="info-right">@counter</p>
+                    </div>
+                    <div class="box">
+                        <p class="info-left">Energy points earned</p>
+                        <p class="info-right points">@student.Points</p>
+                    </div>
+                    <div class="box">
+                        <p class="info-left">Course enrolled</p>
+                        @if (array.Count != null)
+                        {
+                            <p class="info-right">@array.Count</p>
+                        }
+                        else
+                        {
+                            <p class="info-right">0</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

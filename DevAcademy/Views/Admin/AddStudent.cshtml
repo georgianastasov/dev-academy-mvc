@@ -1,0 +1,97 @@
+﻿@model Student
+@{
+    ViewData["Title"] = "Add Student";
+    Layout = "_LogAdmin";
+}
+@{
+    Admin admin = ViewData["Admin"] as Admin;
+}
+<div class="site-dashboard">
+    <div class="site-left">
+        <p class="site-title">Admin Dashboard</p>
+        <nav class="navigation-account">
+            <ul>
+                <li>Admin</li>
+                <li>
+                    <a href="">@admin.Username</a>
+                </li>
+            </ul>
+        </nav>
+        <nav class="navigation-admin">
+            <ul>
+                <li><a href="/Admin/Dashboard">Back</a></li>
+            </ul>
+        </nav>
+    </div>
+    <div class="site-right">
+        <form method="post" asp-action="AddStudent">
+            <div class="site-top">
+                <p class="caption">Add Student</p>
+            </div>
+            <div class="box-form">
+                <div asp-validation-summary="ModelOnly"></div>
+                <div class="form-group">
+                    <div class="box">
+                        <label asp-for="FirstName"></label>
+                        <input asp-for="FirstName" />
+                        <span asp-validation-for="FirstName"></span>
+                    </div>
+                    <div class="box">
+                        <label asp-for="LastName"></label>
+                        <input asp-for="LastName" />
+                        <span asp-validation-for="LastName"></span>
+                    </div>
+                    <div class="box">
+                        <label asp-for="Username"></label>
+                        <input asp-for="Username" />
+                        <span asp-validation-for="Username"></span>
+                    </div>
+                    <div class="box">
+                        <label asp-for="Email"></label>
+                        <input asp-for="Email" />
+                        <span asp-validation-for="Email"></span>
+                    </div>
+                    <div class="box">
+                        <label asp-for="AccountType"></label>
+                        <input asp-for="AccountType" value="Admin" disabled/>
+                        @*<span asp-validation-for="AccountType"></span>*@
+                    </div>
+                    <div class="box">
+                        <label asp-for="Points"></label>
+                        <input asp-for="Points" value="0" disabled/>
+                        <span asp-validation-for="Points"></span>
+                    </div>
+                    <div class="box">
+                        <label asp-for="Progress"></label>
+                        <input asp-for="Progress" value="0" disabled/>
+                        <span asp-validation-for="Progress"></span>
+                    </div>
+                    <div class="box">
+                        <label asp-for="TimeSpent"></label>
+                        <input asp-for="TimeSpent" value="00h:00m:01s" disabled/>
+                        <span asp-validation-for="TimeSpent"></span>
+                    </div>
+                    <div class="box">
+                        <label asp-for="Bio"></label>
+                        <textarea asp-for="Bio" rows="8" cols="45"></textarea>
+                        <span asp-validation-for="Bio"></span>
+                    </div>
+                    <div class="box">
+                        <label asp-for="Password"></label>
+                        <input asp-for="Password" />
+                        <span asp-validation-for="Password"></span>
+                    </div>
+                    <div class="box">
+                        <label asp-for="ConfirmPassword"></label>
+                        <input asp-for="ConfirmPassword" />
+                        <span asp-validation-for="ConfirmPassword"></span>
+                    </div>
+                    <div class="box-buttons">
+                        <input type="submit" class="add" value="Add"/>
+                        <a class="" href="/Admin/Dashboard">Back</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

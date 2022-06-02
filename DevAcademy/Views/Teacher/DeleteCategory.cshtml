@@ -1,0 +1,173 @@
+﻿@model Category
+@{
+    ViewData["Title"] = "Delete Category";
+    Layout = "_LogTeacher";
+}
+@{
+    Teacher teacher = ViewData["Teacher"] as Teacher;
+    IEnumerable<Course> courses = ViewData["Courses"] as IEnumerable<Course>;
+    string courseText = null;
+    foreach (var course in courses)
+    {
+        if (course.CategoryID == @Model.Id)
+        {
+           courseText += "Id:" + @course.Id.ToString() + " " + "Title:" + @course.Title.ToString() + "\n";
+        }
+    }
+    IEnumerable<Admin> admins = ViewData["Admins"] as IEnumerable<Admin>;
+    string adminText = null;
+    foreach (var adminn in admins)
+    {
+        if (@Model.AdminID != null && @Model.AdminID == adminn.Id)
+        {
+            adminText = "Id:" + @adminn.Id.ToString() + " " + "Username:" + @adminn.Username.ToString();
+        }
+    }
+    IEnumerable<Teacher> teachers = ViewData["Teachers"] as IEnumerable<Teacher>;
+    string teacherText = null;
+    foreach (var teacherr in teachers)
+    {
+        if (@Model.TeacherID != null && @Model.TeacherID == teacherr.Id)
+        {
+            teacherText = "Id:" + teacherr.Id.ToString() + " " + "Username:" + teacherr.Username.ToString();
+        }
+    }
+    IEnumerable<Category> categories = ViewData["Categories"] as IEnumerable<Category>;
+    IEnumerable<Section> sections = ViewData["Sections"] as IEnumerable<Section>;
+    int countCategories = 0;
+    int countCourses = 0;
+    int countSections = 0;
+    @foreach (var category in categories)
+    {
+        if (category.TeacherID != null)
+        {
+            if (category.TeacherID == @teacher.Id)
+            {
+                countCategories++;
+            }
+        }
+    }
+    @foreach (var course in courses)
+    {
+        if (course.TeacherID != null)
+        {
+            if (course.TeacherID == @teacher.Id)
+            {
+                countCourses++;
+            }
+        }
+    }
+    @foreach (var section in sections)
+    {
+        if (section.TeacherID != null)
+        {
+            if (section.TeacherID == @teacher.Id)
+            {
+                countSections++;
+            }
+        }
+    }
+}
+<input type="checkbox" name="main-nav-toggle" id="main-nav-toggle" checked />
+<header class="site-header">
+    <div class="wrapper">
+        <nav class="site-nav left">
+            <ul>
+                <li>
+                    <a href="/Teacher/Courses">Courses</a>
+                    <ul id="courses-header">
+                        <li><a href="/Teacher/Categories">Categories</a></li>
+                        <li><a href="/Teacher/Courses">Courses</a></li>
+                        <li><a href="/Teacher/Sections">Sections</a></li>
+                    </ul>
+                </li>
+                <li><a href="/Teacher/About">About us</a></li>
+            </ul>
+        </nav>
+        <div class="site-logo">
+            <img src="~/images/458910.png" alt="">
+            <a class="caption" href="/Teacher/Dashboard">Academy</a>
+        </div>
+        <label for="main-nav-toggle" id="toggle"><i class="fab fa-xing"></i>Menu</label>
+        <nav class="site-nav right">
+            <ul>
+                <li><a href="/Teacher/Contacts">Contacts</a></li>
+                <li>
+                    <a href="/Teacher/Dashboard">@teacher.Username</a>
+                    <ul id="username-header">
+                        <li><a href="/Teacher/Dashboard">Account</a></li>
+                        <li><a href="/Teacher/Settings">Settings</a></li>
+                        <li><a href="/Home/Index">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>
+<div class="acount-dashboard-teacher">
+    <div class="wrapper">
+        <div class="left">
+            <div class="left-links">
+                <p>Wellcome, <a class="username" href="/Teacher/Dashboard">@teacher.Username</a></p>
+                <p class="info">Teacher dashboard</p>
+            </div>
+        </div>
+        <div class="right">
+            <p class="score">Categories: @countCategories</p>
+            <p class="score">Courses: @countCourses</p>
+            <p class="score">Sections: @countSections</p>
+        </div>
+    </div>
+</div>
+<div class="teacher-form">
+    <div class="wrapper">
+        <form method="post" asp-action="DeleteCategoryPost">
+            <input asp-for="Id" hidden />
+            <div class="site-top">
+                <p class="caption">Delete Category</p>
+            </div>
+            <div class="box-form">
+                <div asp-validation-summary="ModelOnly"></div>
+                <div class="form-group">
+                    <div class="box">
+                        <label asp-for="Title"></label>
+                        <input asp-for="Title" disabled />
+                    </div>
+                    <div class="box">
+                        <label asp-for="Description"></label>
+                        <textarea asp-for="Description" rows="8" cols="35" disabled></textarea>
+                    </div>
+                    <div class="box">
+                        <label asp-for="Courses"></label>
+                        <textarea rows="8" cols="40" disabled>@courseText</textarea>
+                    </div>
+                    @if (@Model.AdminID != null && @Model.AdminID != 0)
+                    {
+                        <div class="box">
+                            <label asp-for="AdminID"></label>
+                            <textarea rows="2" cols="45" disabled>@adminText</textarea>
+                        </div>
+                    }
+                    else if (@Model.TeacherID != null && @Model.TeacherID != 0)
+                    {
+                        <div class="box">
+                            <label asp-for="TeacherID"></label>
+                            <textarea rows="2" cols="45" disabled>@teacherText</textarea>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="box">
+                            <label>Created by</label>
+                            <textarea rows="2" cols="45" disabled>The creator was deactivated</textarea>
+                        </div>
+                    }
+                    <div class="box-buttons">
+                        <input type="submit" class="delete" value="Delete" />
+                        <a class="" href="/Teacher/Dashboard">Back</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

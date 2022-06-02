@@ -1,0 +1,180 @@
+﻿@using System.Text
+@model Student
+@{
+    ViewData["Title"] = "Dev Academy Enroll Course";
+    Layout = "_LogStudent";
+}
+@{
+    Category category = ViewData["Category"] as Category;
+    Course course = ViewData["Course"] as Course;
+    IEnumerable<Section> sections = ViewData["Sections"] as IEnumerable<Section>;
+    IEnumerable<Admin> admins = ViewData["Admins"] as IEnumerable<Admin>;
+    IEnumerable<Teacher> teachers = ViewData["Teachers"] as IEnumerable<Teacher>;
+    var count = 1;
+    var counter = 0;
+    StringBuilder br = new StringBuilder();
+    string word = null;
+
+    List<string> array = new List<string>();
+    if (Model.CoursesIDs != null)
+    {
+        var array2 = @Model.CoursesIDs.Split(',', StringSplitOptions.RemoveEmptyEntries).ToArray();
+        array = array2.ToList();
+    }
+}
+<input type="checkbox" name="main-nav-toggle" id="main-nav-toggle" checked />
+<header class="site-header">
+    <div class="wrapper">
+        <nav class="site-nav left">
+            <ul>
+                <li>
+                    <a href="/Student/Courses">Courses</a>
+                    <ul id="courses-header">
+                        <li><a href="/Student/Categories">Categories</a></li>
+                        <li><a href="/Student/Courses">Courses</a></li>
+                        <li><a href="/Student/Sections">Sections</a></li>
+                    </ul>
+                </li>
+                <li><a href="/Student/About">About us</a></li>
+            </ul>
+        </nav>
+        <div class="site-logo">
+            <img src="~/images/458910.png" alt="">
+            <a class="caption" href="/Student/Dashboard">Academy</a>
+        </div>
+        <label for="main-nav-toggle" id="toggle"><i class="fab fa-xing"></i>Menu</label>
+        <nav class="site-nav right">
+            <ul>
+                <li><a href="/Student/Contacts">Contacts</a></li>
+                <li>
+                    <a href="/Student/Dashboard">@Model.Username</a>
+                    <ul id="username-header">
+                        <li><a href="/Student/Dashboard">Account</a></li>
+                        <li><a href="/Student/Settings">Settings</a></li>
+                        <li><a asp-controller="Student" asp-action="Logout">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>
+<div class="intro-enroll">
+    <div class="wrapper">
+        <p class="upcap"><a asp-controller="Student" asp-action="Courses">@category.Title</a></p>
+        <p class="cap">Course</p>
+    </div>
+</div>
+<div class="info-enroll">
+    <div class="wrapper">
+        <div class="left">
+            <div class="up">
+                <p class="cap">In this course:</p>
+                @foreach (var sectionn in sections)
+                {
+                    <p class="count"><a href="#@sectionn.Title">@count. @sectionn.Title</a></p>
+                    count++;
+                }
+            </div>
+            <div class="down">
+                <p class="cap">This course will bring you:</p>
+                <a class="points">@course.Points points</a>
+            </div>
+            <div class="down-down">
+                <p class="cap">Course about:</p>
+                <p class="description">@course.Description</p>
+            </div>
+            <div class="bottom">
+                <p class="cap">Created by:</p>
+                @if (course.AdminID != null)
+                {
+                    foreach (var admin in admins)
+                    {
+                        if (course.AdminID == admin.Id)
+                        {
+                            <p class="creator">Admin: @admin.Username</p>
+                        }
+                    }
+                }
+                else if (course.TeacherID != null)
+                {
+                    foreach (var teacher in teachers)
+                    {
+                        if (course.TeacherID == teacher.Id)
+                        {
+                            <a class="creatort" asp-controller="Student" asp-action="Teacher" asp-route-id="@teacher.Id">Teacher: @teacher.Username</a>
+                        }
+                    }
+                }
+                else
+                {
+                    <p class="creator">The creator was deactivated.</p>
+                }
+            </div>
+        </div>
+        <div class="right">
+            <p class="title">@course.Title</p>
+            @foreach (var sectionn in sections)
+            {
+                <div class="box">
+                    <div class="up">
+                        <p id="@sectionn.Title" class="section-title">@sectionn.Title</p>
+                    </div>
+                    <div class="down">
+                        <p class="description">@sectionn.Description</p>
+                    </div>
+                    <div class="down-down">
+                        @for (var i = 0; i < sectionn.Text.Length; i++)
+                        {
+                            word = @sectionn.Text[i].ToString();
+                            if (word != " ")
+                            {
+                                br.Append(word);
+                            }
+                            else
+                            {
+                                counter++;
+                                if (counter % 15 == 0)
+                                {
+                                    <p class="text">@br</p>
+                                    br.Clear();
+                                    counter = 0;
+                                }
+                                else
+                                {
+                                    br.Append(word);
+                                }
+                            }
+                        }
+                        @if (counter > 0 && counter < 10)
+                        {
+                            <p class="text">@br</p>
+                            br.Clear();
+                            counter = 0;
+                        }
+                    </div>
+                </div>
+            }
+            <div class="under">
+                @for (var i = 0; i < array.Count; i++)
+                {
+                    string courseItem = array[i];
+                    var courseArray = courseItem.Split('=', StringSplitOptions.RemoveEmptyEntries);
+                    int idCourseItem = int.Parse(courseArray[0].ToString());
+                    if (idCourseItem == course.Id)
+                    {
+                        if (courseArray[1].ToString() == "1")
+                        {
+                            <p class="done">You already finished this course.</p>
+                            <p><a class="donebtn" asp-controller="Student" asp-action="Dashboard">Go to dashboard</a></p>
+                        }
+                        else
+                        {
+                            <p class="ready">Are you ready?</p>
+                            <p><a asp-controller="Student" asp-action="ControllerBetween" asp-route-id="@course.Id">Finish</a></p>
+                        }
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>

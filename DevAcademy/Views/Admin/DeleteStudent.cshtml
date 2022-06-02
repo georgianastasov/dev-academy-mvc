@@ -1,0 +1,114 @@
+﻿@using DevAcademy.Cryptography
+@model Student
+@{
+    ViewData["Title"] = "Delete Student";
+    Layout = "_LogAdmin";
+}
+@{
+    Admin admin = ViewData["Admin"] as Admin;
+    IEnumerable<Course> courses = ViewData["Courses"] as IEnumerable<Course>;
+    string courseText = null;
+    if (Model.CoursesIDs != null)
+    {
+        var array = Model.CoursesIDs.Split(',', StringSplitOptions.RemoveEmptyEntries);
+        for (var i = 0; i < array.Length; i++)
+        {
+            var courseArray = array[i].Split('=', StringSplitOptions.RemoveEmptyEntries);
+            int courseId = int.Parse(courseArray[0].ToString());
+            foreach (var course in courses)
+            {
+                if (courseId == course.Id)
+                {
+                    courseText += "Id:" + @course.Id.ToString() + " " + "Title:" + @course.Title.ToString() + "\n";
+                }
+            }
+        }
+    }
+}
+<div class="site-dashboard">
+    <div class="site-left">
+        <p class="site-title">Admin Dashboard</p>
+        <nav class="navigation-account">
+            <ul>
+                <li>Admin</li>
+                <li>
+                    <a href="">@admin.Username</a>
+                </li>
+            </ul>
+        </nav>
+        <nav class="navigation-admin">
+            <ul>
+                <li><a href="/Admin/Dashboard">Back</a></li>
+            </ul>
+        </nav>
+    </div>
+    <div class="site-right">
+        <form method="post" asp-action="DeleteStudentPost">
+            <input asp-for="Id" hidden />
+            <div class="site-top">
+                <p class="caption">Delete Student</p>
+            </div>
+            <div class="box-form">
+                <div asp-validation-summary="ModelOnly"></div>
+                <div class="form-group">
+                    <div class="box">
+                        <label asp-for="FirstName"></label>
+                        <input asp-for="FirstName" disabled />
+                    </div>
+                    <div class="box">
+                        <label asp-for="LastName"></label>
+                        <input asp-for="LastName" disabled />
+                    </div>
+                    <div class="box">
+                        <label asp-for="Username"></label>
+                        <input asp-for="Username" disabled />
+                    </div>
+                    <div class="box">
+                        <label asp-for="Email"></label>
+                        <input asp-for="Email" disabled />
+                    </div>
+                    <div class="box">
+                        <label asp-for="AccountType"></label>
+                        <input asp-for="AccountType" disabled />
+                    </div>
+                    <div class="box">
+                        <label asp-for="Points"></label>
+                        <input asp-for="Points" disabled />
+                    </div>
+                    <div class="box">
+                        <label asp-for="Progress"></label>
+                        <input asp-for="Progress" disabled />
+                    </div>
+                    <div class="box">
+                        <label asp-for="TimeSpent"></label>
+                        <input asp-for="TimeSpent" disabled />
+                    </div>
+                    <div class="box">
+                        <label asp-for="Bio"></label>
+                        <textarea asp-for="Bio" rows="8" cols="45" disabled></textarea>
+                    </div>
+                    <div class="box">
+                        <label asp-for="Password"></label>
+                        <input asp-for="Password" value="@Crypting.DeCrypt(@Model.Password)" disabled />
+                    </div>
+                    <div class="box">
+                        <label asp-for="ConfirmPassword"></label>
+                        <input asp-for="ConfirmPassword" value="@Crypting.DeCrypt(@Model.ConfirmPassword)" disabled />
+                    </div>
+                    <div class="box">
+                        <label asp-for="CreatedDate"></label>
+                        <input asp-for="CreatedDate" disabled />
+                    </div>
+                    <div class="box">
+                        <label asp-for="Courses"></label>
+                        <textarea rows="10" cols="45" disabled>@courseText</textarea>
+                    </div>
+                    <div class="box-buttons">
+                        <input type="submit" class="delete" value="Delete" />
+                        <a class="" href="/Admin/Dashboard">Back</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

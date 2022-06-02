@@ -1,0 +1,390 @@
+﻿@model Student
+@{
+    ViewData["Title"] = "Dev Academy Teacher Profile";
+    Layout = "_LogStudent";
+}
+@{
+    Teacher teacher = ViewData["Teacher"] as Teacher;
+    IEnumerable<Category> categories = ViewData["Categories"] as IEnumerable<Category>;
+    IEnumerable<Course> courses = ViewData["Courses"] as IEnumerable<Course>;
+    IEnumerable<Section> sections = ViewData["Sections"] as IEnumerable<Section>;
+    IEnumerable<Student> students = ViewData["Students"] as IEnumerable<Student>;
+    int countCategories = 0;
+    int countCourses = 0;
+    int countSections = 0;
+    int count = 0;
+    int br = 0;
+    bool isentered = false;
+    bool isentercategory = false;
+    bool isentercourse = false;
+    bool isentersection = false;
+    int courseidTemp = 0;
+    bool isenterstudents = false;
+    int studentCount = 0;
+    @foreach (var category in categories)
+    {
+        if (category.TeacherID != null)
+        {
+            if (category.TeacherID == @teacher.Id)
+            {
+                countCategories++;
+            }
+        }
+    }
+    @foreach (var course in courses)
+    {
+        if (course.TeacherID != null)
+        {
+            if (course.TeacherID == @teacher.Id)
+            {
+                countCourses++;
+            }
+        }
+    }
+    @foreach (var section in sections)
+    {
+        if (section.TeacherID != null)
+        {
+            if (section.TeacherID == @teacher.Id)
+            {
+                countSections++;
+            }
+        }
+    }
+}
+<input type="checkbox" name="main-nav-toggle" id="main-nav-toggle" checked />
+<header class="site-header">
+    <div class="wrapper">
+        <nav class="site-nav left">
+            <ul>
+                <li>
+                    <a href="/Student/Courses">Courses</a>
+                    <ul id="courses-header">
+                        <li><a href="/Student/Categories">Categories</a></li>
+                        <li><a href="/Student/Courses">Courses</a></li>
+                        <li><a href="/Student/Sections">Sections</a></li>
+                    </ul>
+                </li>
+                <li><a href="/Student/About">About us</a></li>
+            </ul>
+        </nav>
+        <div class="site-logo">
+            <img src="~/images/458910.png" alt="">
+            <a class="caption" href="/Student/Dashboard">Academy</a>
+        </div>
+        <label for="main-nav-toggle" id="toggle"><i class="fab fa-xing"></i>Menu</label>
+        <nav class="site-nav right">
+            <ul>
+                <li><a href="/Student/Contacts">Contacts</a></li>
+                <li>
+                    <a href="/Student/Dashboard">@Model.Username</a>
+                    <ul id="username-header">
+                        <li><a href="/Student/Dashboard">Account</a></li>
+                        <li><a href="/Student/Settings">Settings</a></li>
+                        <li><a asp-controller="Student" asp-action="Logout">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>
+<div class="acount-dashboard-teacher">
+    <div class="wrapper">
+        <div class="left">
+            <div class="left-links">
+                <p>Teacher, <a class="username">@teacher.Username</a></p>
+            </div>
+        </div>
+        <div class="right">
+            <p class="score">Categories: @countCategories</p>
+            <p class="score">Courses: @countCourses</p>
+            <p class="score">Sections: @countSections</p>
+        </div>
+    </div>
+</div>
+<div class="teacher-menu">
+    <div class="wrapper">
+        <a onclick="ShowCategoriess()">Categories</a>
+        <a onclick="ShowCoursess()">Courses</a>
+        <a onclick="ShowSectionss()">Sections</a>
+        <a onclick="ShowStudentss()">Students</a>
+        <a onclick="ShowProfilee()">Profile</a>
+    </div>
+</div>
+<div class="teacher-dashboard">
+    <div class="wrapper">
+        <div id="teacher-categories" class="downn down-categories">
+            <div class="top-top">
+                <p class="titlee">Categories</p>
+            </div>
+            @foreach (var category in categories)
+            {
+                if (category.TeacherID != null)
+                {
+                    if (category.TeacherID == teacher.Id)
+                    {
+                        isentercategory = true;
+                        <div class="box">
+                            <div class="leftt">
+                                <div class="top">
+                                    <div class="left">
+                                        <p class="title">@category.Title</p>
+                                    </div>
+                                </div>
+                                <div class="middle">
+                                    <p class="description">@category.Description</p>
+                                </div>
+                                <div class="down">
+                                    @foreach (var course in courses)
+                                    {
+                                        if (course.CategoryID == category.Id)
+                                        {
+                                            count++;
+                                        }
+                                    }
+                                    @if (count > 0)
+                                    {
+                                        <p class="courses">Courses in this category: @count</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="courses">No courses in this category yet.</p>
+                                    }
+                                </div>
+                            </div>
+                            <div class="rightt">
+                                <a class="btn preview" asp-controller="Student" asp-action="Category" asp-route-id="@category.Id">Preview</a>
+                            </div>
+                        </div>
+                    }
+                }
+            }
+            @if (!isentercategory)
+            {
+                <p class="no">No created categories at this moment.</p>
+            }
+        </div>
+        <div id="teacher-courses" class="downn down-courses">
+            <div class="top-top">
+                <p class="titlee">Courses</p>
+            </div>
+            @foreach (var course in courses)
+            {
+                if (course.TeacherID != null)
+                {
+                    if (course.TeacherID == teacher.Id)
+                    {
+                        isentercourse = true;
+                        <div class="box">
+                            <div class="leftt">
+                                <div class="top">
+                                    <div class="left">
+                                        <p class="title">@course.Title</p>
+                                        @foreach (var category in categories)
+                                        {
+                                            if (course.CategoryID == category.Id)
+                                            {
+                                                <p class="category">Category: @category.Title</p>
+                                            }
+                                        }
+                                    </div>
+                                    <div class="right">
+                                        <p class="points">Points: @course.Points</p>
+                                    </div>
+                                </div>
+                                <div class="middle">
+                                    <p class="description">@course.Description</p>
+                                </div>
+                                <div class="pre-down">
+                                    @foreach (var sectionn in sections)
+                                    {
+                                        if (sectionn.CourseID == course.Id)
+                                        {
+                                            br++;
+                                        }
+                                    }
+                                    @if (br > 0)
+                                    {
+                                        <p class="courses">Sections in this course: @br</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="courses">No sections in this course yet.</p>
+                                    }
+                                </div>
+                                <div class="down">
+                                    @if (course.StudentsIDs != null)
+                                    {
+                                        var array = course.StudentsIDs.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                                        <p class="students">Students enrolled in this course: @array.Length</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="students">No students enrolled in this course yet.</p>
+                                    }
+                                </div>
+                            </div>
+                            <div class="rightt">
+                                <a class="btn preview" asp-controller="Student" asp-action="Course" asp-route-id="@course.Id">Preview</a>
+                            </div>
+                        </div>
+                    }
+                }
+            }
+            @if (!isentercourse)
+            {
+                <p class="no">No created courses at this moment.</p>
+            }
+        </div>
+        <div id="teacher-sections" class="downn down-sections">
+            <div class="top-top">
+                <p class="titlee">Courses</p>
+            </div>
+            @foreach (var sectionn in sections)
+            {
+                if (sectionn.TeacherID != null)
+                {
+                    if (sectionn.TeacherID == teacher.Id)
+                    {
+                        isentersection = true;
+                        <div class="box">
+                            <div class="leftt">
+                                <div class="top">
+                                    <div class="left">
+                                        <p class="title">@sectionn.Title</p>
+                                        @foreach (var course in courses)
+                                        {
+                                            if (sectionn.CourseID == course.Id)
+                                            {
+                                                <p class="course">Course: @course.Title</p>
+                                                courseidTemp = course.Id;
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                                <div class="middle">
+                                    <p class="description">@sectionn.Description</p>
+                                </div>
+                            </div>
+                            <div class="rightt">
+                                <a class="btn preview" asp-controller="Student" asp-action="Course" asp-route-id="@courseidTemp">Preview</a>
+                            </div>
+                        </div>
+                    }
+                }
+            }
+            @if (!isentersection)
+            {
+                <p class="no">No created sections at this moment.</p>
+            }
+        </div>
+        <div id="teacher-students" class="downn down-students">
+            <p class="titlee">Students</p>
+            @foreach (var course in courses)
+            {
+                if (course.TeacherID != null)
+                {
+                    if (course.TeacherID == teacher.Id)
+                    {
+                        if (course.StudentsIDs != null)
+                        {
+                            isenterstudents = true;
+                            var array = course.StudentsIDs.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                            for (var i = 0; i < array.Length; i++)
+                            {
+                                var studentId = int.Parse(array[i].ToString());
+                                @foreach (var student in students)
+                                {
+                                    if (student.Id == studentId)
+                                    {
+                                        <div class="box">
+                                            <div class="up">
+                                                <p class="cap">Student</p>
+                                                <p class="name">@student.FirstName @student.LastName</p>
+                                            </div>
+                                            <div class="middle">
+                                                <p class="bio">@student.Bio</p>
+                                            </div>
+                                            <div class="predown">
+                                                <p class="username">Username: @student.Username</p>
+                                                <p class="points">Points: @student.Points</p>
+                                            </div>
+                                            <div class="down">
+                                                @if (student.CoursesIDs != null)
+                                                {
+                                                    var arr = student.CoursesIDs.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                                                    studentCount = arr.Length;
+                                                }
+                                                <p class="courses">Courses enrolled: @studentCount</p>
+                                            </div>
+                                            <p class="btnbox"><a class="btn preview" asp-controller="Student" asp-action="Student" asp-route-id="@student.Id">View Profile</a></p>
+                                        </div>
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            @if (!isenterstudents)
+            {
+                <p class="no">No students enrolled in you courses at this moment.</p>
+            }
+        </div>
+        <div id="teacher-profile" class="downn down-profile">
+            <p class="titlee">Profile</p>
+            <div class="info-box">
+                <div class="up">
+                    <p class="cap">Information</p>
+                    <p class="desc"><i class="fa-solid fa-user"></i>Profile</p>
+                </div>
+                <div class="down">
+                    <p class="cap">User statistic</p>
+                    <div class="box">
+                        <p class="info-left">Date joined</p>
+                        <p class="info-right">@teacher.CreatedDate</p>
+                    </div>
+                    <div class="box">
+                        <p class="info-left">Created categories</p>
+                        <p class="info-right">@countCategories</p>
+                    </div>
+                    <div class="box">
+                        <p class="info-left">Created courses</p>
+                        <p class="info-right">@countCourses</p>
+                    </div>
+                    <div class="box">
+                        <p class="info-left">Created sections</p>
+                        <p class="info-right">@countSections</p>
+                    </div>
+                    <div class="box">
+                        <p class="info-left">Students enrolled to your teach</p>
+                        @foreach (var course in courses)
+                        {
+                            if (course.TeacherID != null)
+                            {
+                                if (course.TeacherID == teacher.Id)
+                                {
+                                    isentered = true;
+                                    if (course.StudentsIDs != null)
+                                    {
+                                        var array = course.StudentsIDs.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                                        <p class="info-right">@array.Count()</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="info-right">0</p>
+                                    }
+
+                                }
+                            }
+                        }
+                        @if (!isentered)
+                        {
+                            <p class="info-right">0</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
